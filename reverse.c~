@@ -1,0 +1,24 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include "file_utils.h"
+
+int main(int argc, char** args){
+	//char pointer to pass
+	char* buffer;
+
+	//filename to read
+	char* input = args[1];
+
+	//filename to write
+	char* output = args[2];
+
+	//call read_file and instantiate size val
+	int size = read_file(input, &buffer);
+
+	//write to existing file or create new one
+	write_file(output, buffer, size);
+	//free memory
+	free(buffer);
+
+	return 0;
+}

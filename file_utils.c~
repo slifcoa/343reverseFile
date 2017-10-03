@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <string.h>
+
+int read_file( char* filename, char **buffer ){
+
+	//find size of file
+	struct stat st;
+	stat(filename, &st);
+	int size = st.st_size;
+
+	//allocate memory for the buffer
+	*buffer = (char*)malloc(size*sizeof(char));
+
+	//points to the filename
+	FILE* file;
+
+	// attempts to read the filename passed into it
+	file = fopen(filename, "r");
+	//returns error code -1 if open was not successful and prints error message
+	if(!file){
+	  fprintf(stderr, "ERROR MESSAGE: FILE COULD NOT BE OPENED \n");
+	return -1;	
+	}
+
+	size_t n = 0;
+	int x;
+	//temporary string to hold characters from file
+	char* endOfString;
+	//allocate memory to tempString
+	endOfString = (char*)malloc(size*sizeof(char));
+	//read characters into temporary string until end of file
+	while ((x = fgetc(file)) != EOF){
+        	endOfString[n++] = (char) x;
+    	}
+	//detects the end of string 
+	endOfString[n] = '\0';
+
+	//copies the string and pastes it into the buffer
+	strcpy(*buffer, endOfString);
+	//deallocate memory
+	free(endOfString);
+
+	//close the file
+	fclose(file);
+	//returns the file size 
+	return size;
+}
+
+
+int write_file(char* filename, char *buffer, int size){
+
+  
+
+	//Points to the file
+	FILE *file;
+	
+	//open file or create file that doesn't exist to write to
+	file = fopen(filename, "w");
+
+	//Checks to see if the file already exists and prompts user to agree to overwrite
+	if(file){
+	  fprintf(stderr, "FILE ALREADY EXISTS: DO YOU WANT TO OVERWRITE? (Y/N) \n");
+	  char c = scanf("%c", &c);
+	  if((strcmp(c, "y") == 0) || (strcmp(c, "Y")){
+	    fprintf(stderr, "Overwriting \n"); 
+	  }else{
+	    fprintf(stderr, "Overwrite denied...Cancelled Program");
+		    return -1;
+		    }
+  	}
+  
+
+	//return -1 for error
+	if(!file)
+		return -1;
+
+	//loop through buffer and print individual chars to file
+	//-2 to compensate for empty space in string
+	for(int i = size - 2; i >= 0;  i--){
+		fprintf(file, "%c", buffer[i]);
+	}
+
+	//close file
+	fclose(file);
+	return 0;
+}
